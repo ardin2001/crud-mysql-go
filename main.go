@@ -39,6 +39,23 @@ func GetMahasiswa(w http.ResponseWriter, r *http.Request) {
 
 		utils.ResponseJSON(w, mahasiswas, http.StatusOK)
 		return
+	} else if r.Method == "POST" {
+		fmt.Println("post data")
+		ctx, cancel := context.WithCancel(context.Background())
+
+		defer cancel()
+
+		nim := r.FormValue("nim")
+		fullname := r.FormValue("name")
+		semester := r.FormValue("semester")
+		mahasiswas, err := mahasiswa.Create(nim, fullname, semester, ctx)
+
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		utils.ResponseJSON(w, mahasiswas, http.StatusOK)
+		return
 	}
 
 	http.Error(w, "Tidak di ijinkan", http.StatusNotFound)
@@ -56,11 +73,10 @@ func main() {
 		panic(eb.Error())
 	}
 
-	fmt.Println("Success")
 	http.HandleFunc("/mahasiswa", GetMahasiswa)
 
 	err := http.ListenAndServe(":7000", nil)
-
+	fmt.Println("Server running in port : 7000")
 	if err != nil {
 		log.Fatal(err)
 	}

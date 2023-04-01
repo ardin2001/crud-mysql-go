@@ -35,8 +35,6 @@ func GetAll(ctx context.Context) ([]models.Mahasiswa, error) {
 	}
 	for rowQuery.Next() {
 		var mahasiswa models.Mahasiswa
-		fmt.Println(mahasiswa)
-		fmt.Println("batas")
 		var createdAt, updatedAt string
 
 		if err = rowQuery.Scan(&mahasiswa.ID,
@@ -68,7 +66,7 @@ func GetAll(ctx context.Context) ([]models.Mahasiswa, error) {
 	return mahasiswas, nil
 }
 
-// GetAll
+// Delete
 func DeleteById(id string, ctx context.Context) ([]models.Mahasiswa, error) {
 
 	var mahasiswas []models.Mahasiswa
@@ -88,8 +86,6 @@ func DeleteById(id string, ctx context.Context) ([]models.Mahasiswa, error) {
 	}
 	for rowQuery.Next() {
 		var mahasiswa models.Mahasiswa
-		fmt.Println(mahasiswa)
-		fmt.Println("batas")
 		var createdAt, updatedAt string
 
 		if err = rowQuery.Scan(&mahasiswa.ID,
@@ -119,4 +115,23 @@ func DeleteById(id string, ctx context.Context) ([]models.Mahasiswa, error) {
 	}
 
 	return mahasiswas, nil
+}
+
+// Create
+func Create(nim, fullname, semester string, ctx context.Context) (string, error) {
+
+	db, err := config.MySQL()
+
+	if err != nil {
+		log.Fatal("Cant connect to MySQL", err)
+	}
+	queryText := fmt.Sprintf("INSERT INTO mahasiswa (nim, fullname, semester) VALUES (%v,'%v',%v);", nim, fullname, semester)
+	fmt.Println(queryText)
+
+	_, err = db.ExecContext(ctx, queryText)
+
+	if err != nil {
+		return "", err
+	}
+	return "create data successfull", nil
 }

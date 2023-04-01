@@ -22,7 +22,6 @@ var (
 
 // HubToMySQL
 func MySQL() (*sql.DB, error) {
-	fmt.Println(dsn)
 	db, err := sql.Open("mysql", dsn)
 
 	if err != nil {
